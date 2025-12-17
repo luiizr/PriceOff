@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../repositories/user.repository';
 import { LoginDto, LoginResponseDto, RegisterDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcrypt';
@@ -9,7 +10,10 @@ import * as bcrypt from 'bcrypt';
  */
 @Injectable()
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
   /**
    * Login do usuário
@@ -71,8 +75,18 @@ export class AuthService {
     };
   }
 
+  /**
+   * Gera token JWT
+   */
   private generateToken(userId: string): string {
-    // Simplificado - implementar JWT depois
-    return `token_${userId}_${Date.now()}`;
+    const payload = { sub: userId };
+    return this.jwtService.sign(payload);
+  }
+
+  /**
+   * Valida token JWT e retorna o usuário
+   */
+  async validateUser(userId: string) {
+    return this.userRepository.findById(userId);
   }
 }
