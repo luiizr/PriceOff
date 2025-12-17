@@ -4,7 +4,7 @@
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "cd backend && npm run start:dev",
-    "dev:frontend": "cd frontend && npm start"
+    "dev:backend": "cd api && npm run start:dev",
+    "dev:frontend": "cd app && npm start"
   }
 }
