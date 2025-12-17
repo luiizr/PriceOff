@@ -8,6 +8,14 @@ async function bootstrap() {
     const porta = process.env.PORTA || 3000;
     const app = await NestFactory.create(AppModule);
 
+    // Configuração do CORS
+    app.enableCors({
+      origin: ['http://localhost:4200'], // URL do frontend Angular
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      credentials: true, // Permite envio de cookies e headers de autenticação
+      allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+    });
+
     // Verificar conexão com banco de dados
     try {
       const dataSource = app.get(DataSource);

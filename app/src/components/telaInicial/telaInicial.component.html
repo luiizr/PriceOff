@@ -1,0 +1,71 @@
+<div class="tela-inicial">
+  <!-- Conteúdo quando USUÁRIO LOGADO -->
+  <div *ngIf="isAuthenticated" class="content-logged">
+    <div class="header">
+      <h1>Bem-vindo, {{ currentUser?.name }}!</h1>
+      <button class="logout-btn" (click)="logout()">Sair</button>
+    </div>
+
+    <div class="main-content">
+      <h2>Dashboard PriceOff</h2>
+      <p>Você está logado no sistema.</p>
+      
+      <!-- Aqui vai o conteúdo principal da aplicação -->
+      <div class="dashboard-cards">
+        <div class="card">
+          <h3>Produtos</h3>
+          <p>Gerencie seus produtos</p>
+        </div>
+        <div class="card">
+          <h3>Pedidos</h3>
+          <p>Acompanhe seus pedidos</p>
+        </div>
+        <div class="card">
+          <h3>Perfil</h3>
+          <p>Configure sua conta</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE AUTENTICAÇÃO (quando NÃO logado) -->
+  <div *ngIf="showAuthModal" class="auth-modal-overlay">
+    <div class="auth-modal">
+      <div class="modal-content">
+        <!-- Alternador Login/Registro -->
+        <div class="auth-tabs">
+          <button 
+            [class.active]="authMode === 'login'"
+            (click)="toggleAuthMode()"
+          >
+            Login
+          </button>
+          <button 
+            [class.active]="authMode === 'register'"
+            (click)="toggleAuthMode()"
+          >
+            Criar Conta
+          </button>
+        </div>
+
+        <!-- Conteúdo do Modal -->
+        <div class="auth-content">
+          <app-login *ngIf="authMode === 'login'"></app-login>
+          <app-register *ngIf="authMode === 'register'"></app-register>
+        </div>
+
+        <!-- Alternador de Texto -->
+        <div class="switch-mode">
+          <p *ngIf="authMode === 'login'">
+            Não tem uma conta? 
+            <a (click)="toggleAuthMode()">Criar conta</a>
+          </p>
+          <p *ngIf="authMode === 'register'">
+            Já tem uma conta? 
+            <a (click)="toggleAuthMode()">Entrar</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

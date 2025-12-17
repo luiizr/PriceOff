@@ -1,0 +1,61 @@
+<div class="register-container">
+  <h2>Criar Conta</h2>
+  
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+    <div class="form-group">
+      <label for="name">Nome</label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name"
+        [(ngModel)]="name"
+        placeholder="Seu nome completo"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email"
+        [(ngModel)]="email"
+        placeholder="seu@email.com"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input 
+        type="password" 
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Mínimo 6 caracteres"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirmar Senha</label>
+      <input 
+        type="password" 
+        id="confirmPassword"
+        name="confirmPassword"
+        [(ngModel)]="confirmPassword"
+        placeholder="Digite a senha novamente"
+        required
+      />
+    </div>
+
+    <div class="error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Criando conta...' : 'Criar Conta' }}
+    </button>
+  </form>
+</div>
