@@ -235,12 +235,3 @@ import { ProductRepository } from './repositories/product.repository';
 4. **SERVICE** → Implementa regras de negócio
 5. **CONTROLLER** → Expõe rotas HTTP
 6. **APP.MODULE** → Registra tudo
-
-## 🚀 Pronto para usar!
-
-Agora você pode criar qualquer funcionalidade seguindo esse padrão:
-- Usuários ✓
-- Produtos
-- Pedidos
-- Categorias
-- etc...

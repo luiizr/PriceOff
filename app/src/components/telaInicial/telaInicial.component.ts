@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { LoginComponent } from '../auth/login.component';
 import { RegisterComponent } from '../auth/register.component';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
 
 /**
  * TELA INICIAL
@@ -12,13 +14,12 @@ import { RegisterComponent } from '../auth/register.component';
 @Component({
   selector: 'app-tela-inicial',
   standalone: true,
-  imports: [CommonModule, LoginComponent, RegisterComponent],
+  imports: [CommonModule, LoginComponent, RegisterComponent, CardModule, ButtonModule],
   templateUrl: './telaInicial.component.html',
   styleUrls: ['./telaInicial.component.scss']
 })
 export class TelaInicialComponent {
   isAuthenticated = false;
-  showAuthModal = false;
   authMode: 'login' | 'register' = 'login';
   currentUser: any = null;
 
@@ -30,18 +31,16 @@ export class TelaInicialComponent {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
       this.isAuthenticated = !!user;
-      this.showAuthModal = !user;
     });
   }
 
   checkAuth(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
     this.currentUser = this.authService.getCurrentUser();
-    this.showAuthModal = !this.isAuthenticated;
   }
 
-  toggleAuthMode(): void {
-    this.authMode = this.authMode === 'login' ? 'register' : 'login';
+  setAuthMode(mode: 'login' | 'register'): void {
+    this.authMode = mode;
   }
 
   logout(): void {

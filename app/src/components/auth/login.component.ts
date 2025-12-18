@@ -18,8 +18,13 @@ export class LoginComponent {
   password = '';
   loading = false;
   error = '';
+  showPassword = false;
 
   constructor(private authService: AuthService) {}
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
     if (!this.email || !this.password) {

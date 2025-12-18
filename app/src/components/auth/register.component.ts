@@ -20,8 +20,18 @@ export class RegisterComponent {
   confirmPassword = '';
   loading = false;
   error = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(private authService: AuthService) {}
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
 
   onSubmit(): void {
     if (!this.name || !this.email || !this.password || !this.confirmPassword) {

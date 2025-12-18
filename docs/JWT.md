@@ -241,7 +241,6 @@ Headers:
 ✅ **Rotas Públicas** → Sem @UseGuards  
 🔒 **Rotas Protegidas** → Com @UseGuards(JwtAuthGuard)  
 👤 **Pegar Usuário** → Use @CurrentUser()  
-🔑 **Token válido por** → 7 dias (configurável no .env)  
 
 ## 📂 Estrutura de Arquivos
 

@@ -1,70 +1,116 @@
-<div class="tela-inicial">
+<div class="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
   <!-- Conteúdo quando USUÁRIO LOGADO -->
-  <div *ngIf="isAuthenticated" class="content-logged">
-    <div class="header">
-      <h1>Bem-vindo, {{ currentUser?.name }}!</h1>
-      <button class="logout-btn" (click)="logout()">Sair</button>
-    </div>
+  <div *ngIf="isAuthenticated" class="flex-1 p-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-bold text-gray-100">Bem-vindo, {{ currentUser?.name }}!</h1>
+        <p-button label="Sair" icon="pi pi-sign-out" (onClick)="logout()" severity="secondary"></p-button>
+      </div>
 
-    <div class="main-content">
-      <h2>Dashboard PriceOff</h2>
-      <p>Você está logado no sistema.</p>
-      
-      <!-- Aqui vai o conteúdo principal da aplicação -->
-      <div class="dashboard-cards">
-        <div class="card">
-          <h3>Produtos</h3>
-          <p>Gerencie seus produtos</p>
-        </div>
-        <div class="card">
-          <h3>Pedidos</h3>
-          <p>Acompanhe seus pedidos</p>
-        </div>
-        <div class="card">
-          <h3>Perfil</h3>
-          <p>Configure sua conta</p>
-        </div>
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-200 mb-4">Dashboard PriceOff</h2>
+        <p class="text-gray-400">Você está logado no sistema.</p>
+      </div>
+
+      <!-- Dashboard Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <p-card class="cursor-pointer hover:shadow-lg transition-shadow bg-gray-800 border-gray-700">
+          <ng-template pTemplate="header">
+            <div class="p-4 bg-blue-900">
+              <i class="pi pi-box text-2xl text-blue-400"></i>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="title">Produtos</ng-template>
+          <ng-template pTemplate="content">
+            <p class="text-gray-300">Gerencie seus produtos</p>
+          </ng-template>
+        </p-card>
+
+        <p-card class="cursor-pointer hover:shadow-lg transition-shadow bg-gray-800 border-gray-700">
+          <ng-template pTemplate="header">
+            <div class="p-4 bg-green-900">
+              <i class="pi pi-shopping-cart text-2xl text-green-400"></i>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="title">Pedidos</ng-template>
+          <ng-template pTemplate="content">
+            <p class="text-gray-300">Acompanhe seus pedidos</p>
+          </ng-template>
+        </p-card>
+
+        <p-card class="cursor-pointer hover:shadow-lg transition-shadow bg-gray-800 border-gray-700">
+          <ng-template pTemplate="header">
+            <div class="p-4 bg-purple-900">
+              <i class="pi pi-user text-2xl text-purple-400"></i>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="title">Perfil</ng-template>
+          <ng-template pTemplate="content">
+            <p class="text-gray-300">Configure sua conta</p>
+          </ng-template>
+        </p-card>
       </div>
     </div>
   </div>
 
   <!-- MODAL DE AUTENTICAÇÃO (quando NÃO logado) -->
-  <div *ngIf="showAuthModal" class="auth-modal-overlay">
-    <div class="auth-modal">
-      <div class="modal-content">
-        <!-- Alternador Login/Registro -->
-        <div class="auth-tabs">
-          <button 
+  <div *ngIf="!isAuthenticated" class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+    <!-- Card Container -->
+    <div class="w-full max-w-md">
+      <!-- Header with Logo/Title -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-white mb-2">Preço Baixo</h1>
+        <p class="text-gray-300">Todas as ofertas diretamente com você!</p>
+      </div>
+
+      <!-- Auth Card -->
+      <div class="bg-black rounded-lg border border-gray-700 shadow-2xl p-8">
+        <!-- Tabs -->
+        <div class="flex mb-8 bg-gray-900 rounded-lg p-1">
+          <button
             [class.active]="authMode === 'login'"
-            (click)="toggleAuthMode()"
+            (click)="setAuthMode('login')"
+            [class.bg-gray-800]="authMode === 'login'"
+            [class.text-white]="authMode === 'login'"
+            [class.text-gray-400]="authMode !== 'login'"
+            class="flex-1 py-3 px-4 rounded-md text-sm font-semibold transition-colors duration-200"
           >
-            Login
+            Entrar
           </button>
-          <button 
+          <button
             [class.active]="authMode === 'register'"
-            (click)="toggleAuthMode()"
+            (click)="setAuthMode('register')"
+            [class.bg-gray-800]="authMode === 'register'"
+            [class.text-white]="authMode === 'register'"
+            [class.text-gray-400]="authMode !== 'register'"
+            class="flex-1 py-3 px-4 rounded-md text-sm font-semibold transition-colors duration-200"
           >
-            Criar Conta
+            Cadastro
           </button>
         </div>
 
-        <!-- Conteúdo do Modal -->
+        <!-- Form Content -->
         <div class="auth-content">
           <app-login *ngIf="authMode === 'login'"></app-login>
           <app-register *ngIf="authMode === 'register'"></app-register>
         </div>
 
-        <!-- Alternador de Texto -->
-        <div class="switch-mode">
-          <p *ngIf="authMode === 'login'">
-            Não tem uma conta? 
-            <a (click)="toggleAuthMode()">Criar conta</a>
+        <!-- Switch Mode Links -->
+        <div class="mt-6 text-center">
+          <p *ngIf="authMode === 'login'" class="text-gray-400 text-sm">
+            Não tem uma conta?
+            <a (click)="setAuthMode('register')" class="text-white hover:text-gray-200 font-semibold cursor-pointer">Cadastre-se</a>
           </p>
-          <p *ngIf="authMode === 'register'">
-            Já tem uma conta? 
-            <a (click)="toggleAuthMode()">Entrar</a>
+          <p *ngIf="authMode === 'register'" class="text-gray-400 text-sm">
+            Já tem uma conta?
+            <a (click)="setAuthMode('login')" class="text-white hover:text-gray-200 font-semibold cursor-pointer">Faça login</a>
           </p>
         </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-8 text-center text-xs text-gray-500">
+        <p>&copy; 2025 PriceOff. Todos os direitos reservados.</p>
       </div>
     </div>
   </div>

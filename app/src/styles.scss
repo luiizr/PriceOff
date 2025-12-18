@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PrimeNG Dark Theme */
+@import url('https://cdn.jsdelivr.net/npm/primeng@19/resources/themes/lara-dark-blue/theme.css');
+@import url('https://cdn.jsdelivr.net/npm/primeng@19/resources/primeng.min.css');
+@import url('https://cdn.jsdelivr.net/npm/primeicons@7/primeicons.css');
+
+/* Global Styles */
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-gray-500 text-gray-100;
+}

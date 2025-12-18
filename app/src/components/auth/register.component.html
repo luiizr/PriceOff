@@ -1,61 +1,118 @@
-<div class="register-container">
-  <h2>Criar Conta</h2>
-  
-  <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-    <div class="form-group">
-      <label for="name">Nome</label>
-      <input 
-        type="text" 
-        id="name" 
+<div class="w-full">
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="space-y-6">
+    <!-- Name Input -->
+    <div class="relative">
+      <div class="flex items-center">
+        <i class="pi pi-user text-gray-400 mr-3"></i>
+        <label for="name" class="text-sm font-semibold text-white">Nome Completo</label>
+      </div>
+      <input
+        type="text"
+        id="name"
         name="name"
         [(ngModel)]="name"
         placeholder="Seu nome completo"
         required
+        class="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
+        [class.border-red-500]="registerForm.submitted && !name"
       />
+      <small *ngIf="registerForm.submitted && !name" class="text-red-400 text-xs mt-1 block ml-9">Nome é obrigatório</small>
     </div>
 
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input 
-        type="email" 
-        id="email" 
+    <!-- Email Input -->
+    <div class="relative">
+      <div class="flex items-center">
+        <i class="pi pi-envelope text-gray-400 mr-3"></i>
+        <label for="email" class="text-sm font-semibold text-white">Email</label>
+      </div>
+      <input
+        type="email"
+        id="email"
         name="email"
         [(ngModel)]="email"
-        placeholder="seu@email.com"
+        placeholder="Digite seu email"
         required
+        class="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
+        [class.border-red-500]="registerForm.submitted && !email"
       />
+      <small *ngIf="registerForm.submitted && !email" class="text-red-400 text-xs mt-1 block ml-9">Email é obrigatório</small>
     </div>
 
-    <div class="form-group">
-      <label for="password">Senha</label>
-      <input 
-        type="password" 
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        placeholder="Mínimo 6 caracteres"
-        required
-      />
+    <!-- Password Input -->
+    <div class="relative">
+      <div class="flex items-center">
+        <i class="pi pi-lock text-gray-400 mr-3"></i>
+        <label for="password" class="text-sm font-semibold text-white">Senha</label>
+      </div>
+      <div class="relative mt-2">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Mínimo 6 caracteres"
+          required
+          class="w-full px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
+          [class.border-red-500]="registerForm.submitted && (!password || password.length < 6)"
+        />
+        <button
+          type="button"
+          (click)="togglePasswordVisibility()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+        >
+          <i [class]="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
+        </button>
+      </div>
+      <small *ngIf="registerForm.submitted && !password" class="text-red-400 text-xs mt-1 block ml-9">Senha é obrigatória</small>
+      <small *ngIf="registerForm.submitted && password && password.length < 6" class="text-red-400 text-xs mt-1 block ml-9">Senha deve ter no mínimo 6 caracteres</small>
     </div>
 
-    <div class="form-group">
-      <label for="confirmPassword">Confirmar Senha</label>
-      <input 
-        type="password" 
-        id="confirmPassword"
-        name="confirmPassword"
-        [(ngModel)]="confirmPassword"
-        placeholder="Digite a senha novamente"
-        required
-      />
+    <!-- Confirm Password Input -->
+    <div class="relative">
+      <div class="flex items-center">
+        <i class="pi pi-lock text-gray-400 mr-3"></i>
+        <label for="confirmPassword" class="text-sm font-semibold text-white">Confirmar Senha</label>
+      </div>
+      <div class="relative mt-2">
+        <input
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          id="confirmPassword"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          placeholder="Digite a senha novamente"
+          required
+          class="w-full px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
+          [class.border-red-500]="registerForm.submitted && (!confirmPassword || password !== confirmPassword)"
+        />
+        <button
+          type="button"
+          (click)="toggleConfirmPasswordVisibility()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+        >
+          <i [class]="showConfirmPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
+        </button>
+      </div>
+      <small *ngIf="registerForm.submitted && !confirmPassword" class="text-red-400 text-xs mt-1 block ml-9">Confirmação de senha é obrigatória</small>
+      <small *ngIf="registerForm.submitted && confirmPassword && password !== confirmPassword" class="text-red-400 text-xs mt-1 block ml-9">As senhas não coincidem</small>
     </div>
 
-    <div class="error" *ngIf="error">
+    <!-- Error Message -->
+    <div *ngIf="error" class="bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm">
       {{ error }}
     </div>
 
-    <button type="submit" [disabled]="loading">
-      {{ loading ? 'Criando conta...' : 'Criar Conta' }}
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      [disabled]="loading || !name || !email || !password || password.length < 6 || password !== confirmPassword || !confirmPassword"
+      [class.opacity-50]="!name || !email || !password || password.length < 6 || password !== confirmPassword || !confirmPassword"
+      class="w-full mt-8 px-4 py-3 bg-white hover:bg-gray-100 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 text-black font-semibold rounded-lg transition duration-200 flex items-center justify-center"
+    >
+      <span *ngIf="!loading">Criar Conta</span>
+      <span *ngIf="loading" class="flex items-center">
+        <i class="pi pi-spin pi-spinner mr-2"></i>
+        Criando...
+      </span>
     </button>
   </form>
 </div>
