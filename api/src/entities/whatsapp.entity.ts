@@ -1,10 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 /**
- * ENTIDADE User
- * Representa a tabela 'users' no banco de dados
+ * ENTIDADE Whatsapp
+ * Representa a tabela 'whatsapp' no banco de dados
+ * Para conexão do número dev com o sistema.
+ * 
  */
-@Entity('users')
+@Entity('whatsapp')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -12,17 +14,14 @@ export class User {
   @Column({ length: 100 })
   name: string;
 
-  @Column({ unique: true, length: 100 })
-  email: string;
+  @Column({})
+  phoneNumber: number;
 
-  @Column()
-  password: string;
+  @Column({ unique: true })
+  userId: string;
 
   @Column({ default: true })
   isActive: boolean;
-
-  @Column({ nullable: true })
-  root: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
