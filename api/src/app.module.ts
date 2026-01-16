@@ -14,7 +14,7 @@ import { UserController } from './controllers/user.controller';
 
 // Importar todos os services
 import { AuthService } from './services/auth.service';
-import { WhatsappService } from './services/whatsapp.service';
+// import { WhatsappService } from './services/whatsapp.service';
 
 // Importar todos os repositories
 import { UserRepository } from './repositories/user.repository';
@@ -63,7 +63,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
   providers: [
     AppService,
     AuthService, // Adicionar todos os services aqui
-    WhatsappService, // Service do WhatsApp com Baileys
+    // WhatsappService, // Service do WhatsApp com Baileys
     UserRepository, // Adicionar todos os repositories aqui
     JwtStrategy, // Adicionar strategies aqui
   ],
