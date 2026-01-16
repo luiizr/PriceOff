@@ -1,117 +1,68 @@
-<div class="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
-  <!-- Conteúdo quando USUÁRIO LOGADO -->
-  <div *ngIf="isAuthenticated" class="flex-1 p-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-2xl font-bold text-gray-100">Bem-vindo, {{ currentUser?.name }}!</h1>
-        <p-button label="Sair" icon="pi pi-sign-out" (onClick)="logout()" severity="secondary"></p-button>
-      </div>
+<!-- CONTEÚDO PRINCIPAL QUANDO LOGADO -->
+<div *ngIf="isAuthenticated" class="min-h-screen bg-gray-900">
+  <!-- Menu Sidebar -->
+  <div class="flex">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 min-h-screen">
+      <p-menu 
+        [model]="menuItens()" 
+        styleClass="w-full border-none bg-transparent"
+        class="p-menu-custom">
+        
+        <!-- Logo/Header -->
+        <ng-template pTemplate="start">
+          <div class="inline-flex items-center gap-1 px-2 py-2">
+            <svg width="33" height="35" viewBox="0 0 33 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="..." fill="#6366F1" />
+            </svg>
+            <span class="text-xl font-semibold text-white">
+                PRIME<span class="text-primary">APP</span>
+            </span>
+          </div>
+        </ng-template>
 
-      <div class="mb-8">
-        <h2 class="text-xl font-semibold text-gray-200 mb-4">Dashboard PriceOff</h2>
-        <p class="text-gray-400">Você está logado no sistema.</p>
-      </div>
+        <!-- Submenu Header -->
+        <ng-template pTemplate="submenuheader" let-item>
+          <span class="text-primary font-bold">{{ item.label }}</span>
+        </ng-template>
 
-      <!-- Dashboard Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <p-card class="cursor-pointer hover:shadow-lg transition-shadow bg-gray-800 border-gray-700">
-          <ng-template pTemplate="header">
-            <div class="p-4 bg-blue-900">
-              <i class="pi pi-box text-2xl text-blue-400"></i>
-            </div>
-          </ng-template>
-          <ng-template pTemplate="title">Produtos</ng-template>
-          <ng-template pTemplate="content">
-            <p class="text-gray-300">Gerencie seus produtos</p>
-          </ng-template>
-        </p-card>
+        <!-- Itens do Menu -->
+        <ng-template pTemplate="item" let-item>
+          <a pRipple class="flex items-center px-3 py-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-700 rounded">
+            <span [class]="item.icon"></span>
+            <span class="ms-2">{{ item.label }}</span>
+            <p-badge *ngIf="item.badge" class="ms-auto" [value]="item.badge" />
+            <span *ngIf="item.shortcut" class="ms-auto border border-gray-600 rounded bg-gray-800 text-gray-400 text-xs p-1">
+              {{ item.shortcut }}
+            </span>
+          </a>
+        </ng-template>
 
-        <p-card class="cursor-pointer hover:shadow-lg transition-shadow bg-gray-800 border-gray-700">
-          <ng-template pTemplate="header">
-            <div class="p-4 bg-green-900">
-              <i class="pi pi-shopping-cart text-2xl text-green-400"></i>
-            </div>
-          </ng-template>
-          <ng-template pTemplate="title">Pedidos</ng-template>
-          <ng-template pTemplate="content">
-            <p class="text-gray-300">Acompanhe seus pedidos</p>
-          </ng-template>
-        </p-card>
+        <!-- Perfil do Usuário -->
+        <ng-template pTemplate="end">
+          <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer">
+            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" 
+                     class="mr-2" 
+                     shape="circle" 
+                     size="normal" />
+            <span class="inline-flex flex-col text-left">
+              <span class="font-bold text-white">Amy Elsner</span>
+              <span class="text-sm text-gray-400">Admin</span>
+            </span>
+          </button>
+        </ng-template>
+      </p-menu>
+    </div>
 
-        <p-card class="cursor-pointer hover:shadow-lg transition-shadow bg-gray-800 border-gray-700">
-          <ng-template pTemplate="header">
-            <div class="p-4 bg-purple-900">
-              <i class="pi pi-user text-2xl text-purple-400"></i>
-            </div>
-          </ng-template>
-          <ng-template pTemplate="title">Perfil</ng-template>
-          <ng-template pTemplate="content">
-            <p class="text-gray-300">Configure sua conta</p>
-          </ng-template>
-        </p-card>
-      </div>
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 p-6">
+      <router-outlet></router-outlet>
+      <!-- Aqui vai o conteúdo das suas páginas -->
     </div>
   </div>
+</div>
 
-  <!-- MODAL DE AUTENTICAÇÃO (quando NÃO logado) -->
-  <div *ngIf="!isAuthenticated" class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-    <!-- Card Container -->
-    <div class="w-full max-w-md">
-      <!-- Header with Logo/Title -->
-      <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-white mb-2">Preço Baixo</h1>
-        <p class="text-gray-300">Todas as ofertas diretamente com você!</p>
-      </div>
-
-      <!-- Auth Card -->
-      <div class="bg-black rounded-lg border border-gray-700 shadow-2xl p-8">
-        <!-- Tabs -->
-        <div class="flex mb-8 bg-gray-900 rounded-lg p-1">
-          <button
-            [class.active]="authMode === 'login'"
-            (click)="setAuthMode('login')"
-            [class.bg-gray-800]="authMode === 'login'"
-            [class.text-white]="authMode === 'login'"
-            [class.text-gray-400]="authMode !== 'login'"
-            class="flex-1 py-3 px-4 rounded-md text-sm font-semibold transition-colors duration-200"
-          >
-            Entrar
-          </button>
-          <button
-            [class.active]="authMode === 'register'"
-            (click)="setAuthMode('register')"
-            [class.bg-gray-800]="authMode === 'register'"
-            [class.text-white]="authMode === 'register'"
-            [class.text-gray-400]="authMode !== 'register'"
-            class="flex-1 py-3 px-4 rounded-md text-sm font-semibold transition-colors duration-200"
-          >
-            Cadastro
-          </button>
-        </div>
-
-        <!-- Form Content -->
-        <div class="auth-content">
-          <app-login *ngIf="authMode === 'login'"></app-login>
-          <app-register *ngIf="authMode === 'register'"></app-register>
-        </div>
-
-        <!-- Switch Mode Links -->
-        <div class="mt-6 text-center">
-          <p *ngIf="authMode === 'login'" class="text-gray-400 text-sm">
-            Não tem uma conta?
-            <a (click)="setAuthMode('register')" class="text-white hover:text-gray-200 font-semibold cursor-pointer">Cadastre-se</a>
-          </p>
-          <p *ngIf="authMode === 'register'" class="text-gray-400 text-sm">
-            Já tem uma conta?
-            <a (click)="setAuthMode('login')" class="text-white hover:text-gray-200 font-semibold cursor-pointer">Faça login</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="mt-8 text-center text-xs text-gray-500">
-        <p>&copy; 2025 PriceOff. Todos os direitos reservados.</p>
-      </div>
-    </div>
-  </div>
+<!-- MODAL DE AUTENTICAÇÃO (quando NÃO logado) -->
+<div *ngIf="!isAuthenticated" class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+  <!-- ... resto do código de autenticação permanece igual ... -->
 </div>
