@@ -3,11 +3,11 @@
   <!-- Menu Sidebar -->
   <div class="flex">
     <!-- Sidebar -->
-    <div class="w-64 bg-gray-800 min-h-screen">
+    <div class="w-[13%] bg-gray-800 min-h-screen border-r border-gray-700 sidebar overflow-hidden">
       <p-menu 
         [model]="menuItens()" 
         styleClass="w-full border-none bg-transparent"
-        class="p-menu-custom">
+        class="p-menu-custom w-full">
         
         <!-- Logo/Header -->
         <ng-template pTemplate="start">
@@ -16,7 +16,7 @@
                 <path d="..." fill="#6366F1" />
             </svg>
             <span class="text-xl font-semibold text-white">
-                PRIME<span class="text-primary">APP</span>
+                Price<span class="text-primary">OFF</span>
             </span>
           </div>
         </ng-template>
@@ -64,5 +64,78 @@
 
 <!-- MODAL DE AUTENTICAÇÃO (quando NÃO logado) -->
 <div *ngIf="!isAuthenticated" class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-  <!-- ... resto do código de autenticação permanece igual ... -->
+  <div class="w-full max-w-md">
+    <!-- Cartão de Autenticação -->
+    <div class="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
+
+      <!-- <div>
+        <p> Espaço para por a logo do projeto </p>
+      </div> -->
+
+      <!-- Corpo do Cartão -->
+      <div class="px-6 py-8">
+        <!-- Abas de Login/Registro -->
+        <div class="flex gap-4 mb-8 border-b border-gray-700">
+          <button
+            (click)="setAuthMode('login')"
+            [class.active-tab]="authMode === 'login'"
+            class="flex-1 py-3 px-4 text-center font-semibold transition-colors duration-200"
+            [ngClass]="{
+              'text-indigo-500 border-b-2 border-indigo-500': authMode === 'login',
+              'text-gray-400 hover:text-gray-300': authMode !== 'login'
+            }"
+          >
+            <i class="pi pi-sign-in mr-2"></i> Login
+          </button>
+          <button
+            (click)="setAuthMode('register')"
+            [class.active-tab]="authMode === 'register'"
+            class="flex-1 py-3 px-4 text-center font-semibold transition-colors duration-200"
+            [ngClass]="{
+              'text-indigo-500 border-b-2 border-indigo-500': authMode === 'register',
+              'text-gray-400 hover:text-gray-300': authMode !== 'register'
+            }"
+          >
+            <i class="pi pi-user-plus mr-2"></i> Registrar
+          </button>
+        </div>
+
+        <!-- Conteúdo das Abas -->
+        <div *ngIf="authMode === 'login'" class="animate-fadeIn">
+          <app-login 
+            (authSuccess)="onAuthSuccess()"
+            (authError)="onAuthError($event)"
+          ></app-login>
+        </div>
+
+        <div *ngIf="authMode === 'register'" class="animate-fadeIn">
+          <app-register 
+            (authSuccess)="onAuthSuccess()"
+            (authError)="onAuthError($event)"
+          ></app-register>
+        </div>
+
+        <!-- Mensagem de Erro Global -->
+        <div *ngIf="globalError" class="mt-4 p-3 bg-red-900/30 border border-red-500 rounded-lg">
+          <p class="text-red-300 text-sm flex items-center">
+            <i class="pi pi-exclamation-circle mr-2"></i>
+            {{ globalError }}
+          </p>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="mt-6 text-center text-gray-400 text-xs">
+          <p>Ao continuar, você concorda com nossos</p>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300">Termos de Serviço</a>
+          <span> e </span>
+          <a href="#" class="text-indigo-400 hover:text-indigo-300">Política de Privacidade</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Adicionais -->
+    <div class="mt-6 text-center text-gray-400 text-sm">
+      <p>Todos direitos reservados a PriceOff</p>
+    </div>
+  </div>
 </div>

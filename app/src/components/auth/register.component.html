@@ -1,5 +1,5 @@
 <div class="w-full">
-  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="space-y-6">
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="space-y-5 max-h-[600px] overflow-y-auto pr-2">
     <!-- Name Input -->
     <div class="relative">
       <div class="flex items-center">
@@ -13,10 +13,11 @@
         [(ngModel)]="name"
         placeholder="Seu nome completo"
         required
-        class="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
-        [class.border-red-500]="registerForm.submitted && !name"
+        class="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 focus:outline-none transition duration-200"
+        [class.border-red-500]="error || (registerForm.submitted && !name)"
       />
       <small *ngIf="registerForm.submitted && !name" class="text-red-400 text-xs mt-1 block ml-9">Nome é obrigatório</small>
+      <small *ngIf="error && name && name.length < 3" class="text-red-400 text-xs mt-1 block ml-9">Nome deve ter no mínimo 3 caracteres</small>
     </div>
 
     <!-- Email Input -->
@@ -32,17 +33,27 @@
         [(ngModel)]="email"
         placeholder="Digite seu email"
         required
-        class="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
-        [class.border-red-500]="registerForm.submitted && !email"
+        class="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 focus:outline-none transition duration-200"
+        [class.border-red-500]="error || (registerForm.submitted && !email)"
       />
       <small *ngIf="registerForm.submitted && !email" class="text-red-400 text-xs mt-1 block ml-9">Email é obrigatório</small>
+      <small *ngIf="error && email && !isValidEmail(email)" class="text-red-400 text-xs mt-1 block ml-9">Email inválido</small>
     </div>
 
     <!-- Password Input -->
     <div class="relative">
-      <div class="flex items-center">
-        <i class="pi pi-lock text-gray-400 mr-3"></i>
-        <label for="password" class="text-sm font-semibold text-white">Senha</label>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <i class="pi pi-lock text-gray-400 mr-3"></i>
+          <label for="password" class="text-sm font-semibold text-white">Senha</label>
+        </div>
+        <span *ngIf="password" class="text-xs" [ngClass]="{
+          'text-red-500': getPasswordStrength() === 'weak',
+          'text-yellow-500': getPasswordStrength() === 'medium',
+          'text-green-500': getPasswordStrength() === 'strong'
+        }">
+          Força: {{ getPasswordStrength() === 'weak' ? 'Fraca' : getPasswordStrength() === 'medium' ? 'Média' : 'Forte' }}
+        </span>
       </div>
       <div class="relative mt-2">
         <input
@@ -52,8 +63,8 @@
           [(ngModel)]="password"
           placeholder="Mínimo 6 caracteres"
           required
-          class="w-full px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
-          [class.border-red-500]="registerForm.submitted && (!password || password.length < 6)"
+          class="w-full px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 focus:outline-none transition duration-200"
+          [class.border-red-500]="error || (registerForm.submitted && (!password || password.length < 6))"
         />
         <button
           type="button"
@@ -64,7 +75,7 @@
         </button>
       </div>
       <small *ngIf="registerForm.submitted && !password" class="text-red-400 text-xs mt-1 block ml-9">Senha é obrigatória</small>
-      <small *ngIf="registerForm.submitted && password && password.length < 6" class="text-red-400 text-xs mt-1 block ml-9">Senha deve ter no mínimo 6 caracteres</small>
+      <small *ngIf="registerForm.submitted && password && password.length < 6" class="text-red-400 text-xs mt-1 block ml-9">Mínimo 6 caracteres</small>
     </div>
 
     <!-- Confirm Password Input -->
@@ -81,8 +92,8 @@
           [(ngModel)]="confirmPassword"
           placeholder="Digite a senha novamente"
           required
-          class="w-full px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 focus:outline-none transition duration-200"
-          [class.border-red-500]="registerForm.submitted && (!confirmPassword || password !== confirmPassword)"
+          class="w-full px-4 py-3 rounded-lg bg-gray-900 text-gray-100 border border-gray-700 placeholder-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 focus:outline-none transition duration-200"
+          [class.border-red-500]="error || (registerForm.submitted && (!confirmPassword || password !== confirmPassword))"
         />
         <button
           type="button"
@@ -92,23 +103,44 @@
           <i [class]="showConfirmPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
         </button>
       </div>
-      <small *ngIf="registerForm.submitted && !confirmPassword" class="text-red-400 text-xs mt-1 block ml-9">Confirmação de senha é obrigatória</small>
+      <small *ngIf="registerForm.submitted && !confirmPassword" class="text-red-400 text-xs mt-1 block ml-9">Confirmação é obrigatória</small>
       <small *ngIf="registerForm.submitted && confirmPassword && password !== confirmPassword" class="text-red-400 text-xs mt-1 block ml-9">As senhas não coincidem</small>
     </div>
 
+    <!-- Accept Terms Checkbox -->
+    <div class="flex items-start">
+      <input
+        type="checkbox"
+        id="acceptTerms"
+        name="acceptTerms"
+        [(ngModel)]="acceptTerms"
+        class="w-4 h-4 rounded bg-gray-900 border border-gray-700 cursor-pointer accent-indigo-500 mt-0.5"
+      />
+      <label for="acceptTerms" class="ml-3 text-xs font-medium text-gray-300 cursor-pointer">
+        Concordo com os
+        <a href="#" class="text-indigo-400 hover:text-indigo-300">Termos de Serviço</a>
+        e
+        <a href="#" class="text-indigo-400 hover:text-indigo-300">Política de Privacidade</a>
+      </label>
+    </div>
+
     <!-- Error Message -->
-    <div *ngIf="error" class="bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm">
-      {{ error }}
+    <div *ngIf="error" class="bg-red-900/20 border border-red-600 text-red-300 px-4 py-3 rounded-lg text-sm flex items-start gap-2 animate-shake">
+      <i class="pi pi-exclamation-circle flex-shrink-0 mt-0.5"></i>
+      <span>{{ error }}</span>
     </div>
 
     <!-- Submit Button -->
     <button
       type="submit"
-      [disabled]="loading || !name || !email || !password || password.length < 6 || password !== confirmPassword || !confirmPassword"
-      [class.opacity-50]="!name || !email || !password || password.length < 6 || password !== confirmPassword || !confirmPassword"
-      class="w-full mt-8 px-4 py-3 bg-white hover:bg-gray-100 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 text-black font-semibold rounded-lg transition duration-200 flex items-center justify-center"
+      [disabled]="loading || !name || !email || !password || password.length < 6 || password !== confirmPassword || !confirmPassword || !acceptTerms"
+      [class.opacity-50]="!name || !email || !password || password.length < 6 || password !== confirmPassword || !confirmPassword || !acceptTerms"
+      class="w-full mt-6 px-4 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-lg"
     >
-      <span *ngIf="!loading">Criar Conta</span>
+      <span *ngIf="!loading">
+        <i class="pi pi-user-plus mr-2"></i>
+        Criar Conta
+      </span>
       <span *ngIf="loading" class="flex items-center">
         <i class="pi pi-spin pi-spinner mr-2"></i>
         Criando...

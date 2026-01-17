@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 /**
@@ -11,9 +11,12 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  @Output() authSuccess = new EventEmitter<void>();
+  @Output() authError = new EventEmitter<string>();
+
   email = '';
   password = '';
   loading = false;
@@ -26,9 +29,36 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
+  /**
+   * Validação de email
+   */
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  /**
+   * Submit do formulário de login
+   */
   onSubmit(): void {
+    // Validação básica
     if (!this.email || !this.password) {
-      this.error = 'Preencha todos os campos';
+      this.error = 'Email e senha são obrigatórios';
+      this.authError.emit(this.error);
+      return;
+    }
+
+    // Validação de email
+    if (!this.isValidEmail(this.email)) {
+      this.error = 'Email inválido';
+      this.authError.emit(this.error);
+      return;
+    }
+
+    // Validação de senha
+    if (this.password.length < 3) {
+      this.error = 'Senha deve ter no mínimo 3 caracteres';
+      this.authError.emit(this.error);
       return;
     }
 
@@ -38,12 +68,20 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        // Login bem sucedido - usuário já está autenticado
+        this.error = '';
+        // Limpar formulário
+        this.email = '';
+        this.password = '';
+        // Emitir evento de sucesso
+        this.authSuccess.emit();
       },
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.message || 'Erro ao fazer login';
-      }
+        this.error =
+          err.error?.message ||
+          'Erro ao fazer login. Verifique suas credenciais.';
+        this.authError.emit(this.error);
+      },
     });
   }
 }

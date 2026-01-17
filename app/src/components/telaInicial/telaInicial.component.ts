@@ -34,31 +34,31 @@ interface itensMenu {
     MenuModule,
     BadgeModule,
     AvatarModule,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './telaInicial.component.html',
-  styleUrls: ['./telaInicial.component.scss']
+  styleUrls: ['./telaInicial.component.scss'],
 })
 export class TelaInicialComponent {
   isAuthenticated = false;
   authMode: 'login' | 'register' = 'login';
   currentUser: any = null;
-  
-
+  globalError: string | null = null;
 
   // Signals
   menuItens = signal<itensMenu[]>([]);
 
-
-
   constructor(private authService: AuthService) {
     // Verifica autenticação
     this.checkAuth();
-    
+
     // Observa mudanças no usuário
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
       this.isAuthenticated = !!user;
+      if (user) {
+        this.globalError = null; // Limpar erro ao autenticar
+      }
     });
 
     effect(() => {
@@ -70,23 +70,68 @@ export class TelaInicialComponent {
           icon: 'pi pi-fw pi-home',
           command: () => {
             console.log('Navegar para Dashboard');
-          }
-        }
-      ])
+          },
+        },
+        {
+          label: 'Meus Produtos',
+          icon: 'pi pi-fw pi-list',
+          command: () => {
+            console.log('Navegar para Meus Produtos');
+          },
+        },
+        {
+          label: 'Sair',
+          icon: 'pi pi-fw pi-sign-out',
+          command: () => {
+            this.logout();
+          },
+        },
+      ]);
       console.info('Menu Itens:', this.menuItens());
-    })
+    });
   }
 
+  /**
+   * Verifica status de autenticação
+   */
   checkAuth(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
     this.currentUser = this.authService.getCurrentUser();
   }
 
+  /**
+   * Muda entre abas de login e registro
+   */
   setAuthMode(mode: 'login' | 'register'): void {
     this.authMode = mode;
+    this.globalError = null; // Limpar erro ao trocar aba
   }
 
+  /**
+   * Callback quando autenticação é bem sucedida
+   */
+  onAuthSuccess(): void {
+    console.log('✅ Autenticação bem-sucedida!');
+    this.globalError = null;
+    // O isAuthenticated é atualizado automaticamente pelo subscription acima
+  }
+
+  /**
+   * Callback quando há erro na autenticação
+   */
+  onAuthError(error: string): void {
+    console.error('❌ Erro de autenticação:', error);
+    this.globalError = error;
+  }
+
+  /**
+   * Faz logout do usuário
+   */
   logout(): void {
     this.authService.logout();
+    this.isAuthenticated = false;
+    this.currentUser = null;
+    this.authMode = 'login';
+    this.globalError = null;
   }
 }
