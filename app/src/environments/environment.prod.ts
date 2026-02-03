@@ -4,5 +4,5 @@
  */
 export const environment = {
   production: true,
-  apiUrl: 'https://api.priceoff.com' // Altere para URL real da sua API em produção
+  apiUrl: 'https://api.fluxoAI.com' // Altere para URL real da sua API em produção
 };

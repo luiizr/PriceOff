@@ -1,0 +1,73 @@
+<div class="auth-container">
+  <div class="brand-side">
+    <div class="bg-gradient-orb orb-1"></div>
+    <div class="content">
+      <div class="logo">
+        <i class="ti ti-brand-openai"></i> Fluxo.
+      </div>
+      <h2>Domine suas finanças<br>sem abrir planilhas.</h2>
+      <p>Junte-se a 5.000+ usuários que transformaram o WhatsApp em um CFO pessoal.</p>
+      
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p>"Finalmente parei de gastar mais do que ganho. O Fluxo me avisa antes de eu fazer besteira."</p>
+        <div class="user">
+          <div class="avatar">M</div>
+          <span>Marcos S., Designer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-side">
+    <div class="form-wrapper">
+      <div class="header">
+        <h1>{{ isLoginMode ? 'Bem-vindo de volta' : 'Crie sua conta' }}</h1>
+        <p class="subtitle">
+          {{ isLoginMode ? 'Acesse seu painel financeiro.' : 'Comece seu teste grátis de 7 dias.' }}
+        </p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="input-group" *ngIf="!isLoginMode">
+          <label>Nome completo</label>
+          <div class="input-wrapper">
+            <i class="ti ti-user"></i>
+            <input type="text" placeholder="Seu nome">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>E-mail</label>
+          <div class="input-wrapper">
+            <i class="ti ti-mail"></i>
+            <input type="email" placeholder="exemplo@email.com">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Senha</label>
+          <div class="input-wrapper">
+            <i class="ti ti-lock"></i>
+            <input type="password" placeholder="••••••••">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary btn-block">
+          {{ isLoginMode ? 'Entrar no Sistema' : 'Começar Agora' }} <i class="ti ti-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="divider">ou continue com</div>
+
+      <button class="btn-social">
+        <i class="ti ti-brand-google-filled"></i> Google
+      </button>
+
+      <p class="switch-auth">
+        {{ isLoginMode ? 'Não tem uma conta?' : 'Já tem uma conta?' }}
+        <a (click)="toggleMode()">{{ isLoginMode ? 'Cadastre-se' : 'Faça Login' }}</a>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<div class="dashboard-layout">
+  
+  <aside class="sidebar">
+    <div class="logo-area">
+      <i class="ti ti-brand-openai"></i> Fluxo.
+    </div>
+    
+    <nav class="nav-menu">
+      <a href="#" class="active"><i class="ti ti-layout-dashboard"></i> Visão Geral</a>
+      <a href="#"><i class="ti ti-receipt-2"></i> Transações</a>
+      <a href="#"><i class="ti ti-chart-pie"></i> Relatórios</a>
+      <a href="#"><i class="ti ti-target"></i> Metas</a>
+      <div class="divider"></div>
+      <a href="#"><i class="ti ti-settings"></i> Configurações</a>
+    </nav>
+
+    <div class="wa-status-card" [class.connected]="whatsappStatus === 'connected'">
+      <div class="status-indicator">
+        <span class="dot"></span>
+        {{ whatsappStatus === 'connected' ? 'IA Conectada' : 'Desconectado' }}
+      </div>
+      <p>Recebendo dados do WhatsApp (11) 999...</p>
+    </div>
+
+    <div class="user-profile">
+      <div class="avatar">C</div>
+      <div class="info">
+        <span class="name">{{ userName }}</span>
+        <span class="role">Pro Plan</span>
+      </div>
+      <button class="btn-logout"><i class="ti ti-logout"></i></button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div>
+        <h1>Olá, {{ userName }} 👋</h1>
+        <p class="date">Aqui está o resumo financeiro de hoje.</p>
+      </div>
+      <div class="actions">
+        <button class="btn-icon"><i class="ti ti-bell"></i><span class="badge">2</span></button>
+        <button class="btn-primary-sm"><i class="ti ti-plus"></i> Novo Gasto Manual</button>
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of stats">
+        <div class="stat-icon" [ngClass]="stat.color">
+          <i class="ti {{ stat.icon }}"></i>
+        </div>
+        <div class="stat-info">
+          <span class="label">{{ stat.label }}</span>
+          <strong class="value">{{ stat.value }}</strong>
+        </div>
+        <div class="trend positive">
+          <i class="ti ti-trending-up"></i> {{ stat.trend }}
+        </div>
+      </div>
+    </section>
+
+    <div class="content-grid">
+      <section class="chart-card">
+        <div class="card-header">
+          <h3>Fluxo de Caixa (Outubro)</h3>
+          <select class="period-select">
+            <option>Semanal</option>
+            <option>Mensal</option>
+          </select>
+        </div>
+        <div class="chart-placeholder">
+          <div class="bar-group" *ngFor="let h of [40, 60, 30, 80, 55, 90, 45]">
+            <div class="bar" [style.height.%]="h"></div>
+            <span class="day">D</span>
+          </div>
+        </div>
+        <div class="budget-progress">
+          <div class="flex-between">
+            <span>Orçamento Mensal</span>
+            <span>75% utilizado</span>
+          </div>
+          <div class="progress-bar">
+            <div class="fill" style="width: 75%"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="transactions-card">
+        <div class="card-header">
+          <h3>Últimas do WhatsApp</h3>
+          <a href="#" class="link-more">Ver tudo</a>
+        </div>
+        
+        <div class="transaction-list">
+          <div class="transaction-item" *ngFor="let t of recentTransactions">
+            <div class="t-icon" [ngClass]="{'in': t.type === 'in', 'out': t.type === 'out'}">
+              <i class="ti" [ngClass]="t.type === 'in' ? 'ti-arrow-down-left' : 'ti-arrow-up-right'"></i>
+            </div>
+            <div class="t-details">
+              <strong>{{ t.title }}</strong>
+              <span>{{ t.cat }}</span>
+            </div>
+            <div class="t-value" [ngClass]="{'positive': t.type === 'in'}">
+              {{ t.type === 'in' ? '+' : '' }} R$ {{ t.val | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

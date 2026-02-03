@@ -11,12 +11,12 @@
         
         <!-- Logo/Header -->
         <ng-template pTemplate="start">
-          <div class="inline-flex items-center gap-1 px-2 py-2">
+          <div class="inline-flex items-center gap-2 px-3 py-3">
             <svg width="33" height="35" viewBox="0 0 33 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="..." fill="#6366F1" />
             </svg>
             <span class="text-xl font-semibold text-white">
-                PRIME<span class="text-primary">APP</span>
+              Price<span class="text-primary">Off</span>
             </span>
           </div>
         </ng-template>
@@ -28,8 +28,15 @@
 
         <!-- Itens do Menu -->
         <ng-template pTemplate="item" let-item>
-          <a pRipple class="flex items-center px-3 py-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-700 rounded">
-            <span [class]="item.icon"></span>
+          <a
+            pRipple
+            class="flex items-center px-3 py-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-700 rounded transition-colors"
+            [routerLink]="item.routerLink"
+            [queryParams]="item.queryParams"
+            routerLinkActive="router-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span [class]="item.icon" class="mr-2"></span>
             <span class="ms-2">{{ item.label }}</span>
             <p-badge *ngIf="item.badge" class="ms-auto" [value]="item.badge" />
             <span *ngIf="item.shortcut" class="ms-auto border border-gray-600 rounded bg-gray-800 text-gray-400 text-xs p-1">
@@ -38,18 +45,35 @@
           </a>
         </ng-template>
 
-        <!-- Perfil do Usuário -->
+        <!-- Perfil do Usuário + Logout -->
         <ng-template pTemplate="end">
-          <button pRipple class="relative overflow-hidden w-full border-0 bg-transparent flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer">
-            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" 
-                     class="mr-2" 
-                     shape="circle" 
-                     size="normal" />
-            <span class="inline-flex flex-col text-left">
-              <span class="font-bold text-white">Amy Elsner</span>
-              <span class="text-sm text-gray-400">Admin</span>
-            </span>
-          </button>
+          <div class="px-2 py-2">
+            <button
+              pRipple
+              class="relative overflow-hidden w-full border-0 bg-transparent flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer"
+            >
+              <p-avatar
+                image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                class="mr-2"
+                shape="circle"
+                size="normal"
+              />
+              <span class="inline-flex flex-col text-left">
+                <span class="font-bold text-white">Amy Elsner</span>
+                <span class="text-sm text-gray-400">Admin</span>
+              </span>
+            </button>
+
+            <!-- Logout button -->
+            <button
+              pRipple
+              (click)="logout()"
+              class="mt-2 w-full flex items-center gap-2 p-2 rounded bg-red-600 text-white hover:bg-red-700"
+            >
+              <span class="pi pi-sign-out"></span>
+              <span>Sair</span>
+            </button>
+          </div>
         </ng-template>
       </p-menu>
     </div>
@@ -63,6 +87,42 @@
 </div>
 
 <!-- MODAL DE AUTENTICAÇÃO (quando NÃO logado) -->
-<div *ngIf="!isAuthenticated" class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-  <!-- ... resto do código de autenticação permanece igual ... -->
+<div *ngIf="!isAuthenticated" class="auth-modal-overlay">
+  <div class="auth-modal">
+    <div class="modal-content">
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button
+          [class.active]="authMode === 'login'"
+          (click)="setAuthMode('login')"
+        >
+          Entrar
+        </button>
+        <button
+          [class.active]="authMode === 'register'"
+          (click)="setAuthMode('register')"
+        >
+          Criar Conta
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="auth-content">
+        <app-login *ngIf="authMode === 'login'"></app-login>
+        <app-register *ngIf="authMode === 'register'"></app-register>
+      </div>
+
+      <!-- Switch text CTA -->
+      <div class="switch-mode text-gray-600">
+        <ng-container *ngIf="authMode === 'login'; else registerSwitch">
+          <span>Não tem uma conta?</span>
+          <button class="ml-2 underline" (click)="setAuthMode('register')">Criar conta</button>
+        </ng-container>
+        <ng-template #registerSwitch>
+          <span>Já possui conta?</span>
+          <button class="ml-2 underline" (click)="setAuthMode('login')">Entrar</button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
 </div>

@@ -20,6 +20,9 @@ export class LoginComponent {
   error = '';
   showPassword = false;
 
+  // Add a robust email pattern validation
+  private emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   constructor(private authService: AuthService) {}
 
   togglePasswordVisibility(): void {
@@ -27,15 +30,24 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (!this.email || !this.password) {
+    // Normalize user input
+    const email = this.email.trim();
+    const password = this.password;
+
+    if (!email || !password) {
       this.error = 'Preencha todos os campos';
+      return;
+    }
+
+    if (!this.emailPattern.test(email)) {
+      this.error = 'Digite um email válido';
       return;
     }
 
     this.loading = true;
     this.error = '';
 
-    this.authService.login(this.email, this.password).subscribe({
+    this.authService.login(email, password).subscribe({
       next: () => {
         this.loading = false;
         // Login bem sucedido - usuário já está autenticado

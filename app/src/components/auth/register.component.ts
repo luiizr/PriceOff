@@ -23,6 +23,9 @@ export class RegisterComponent {
   showPassword = false;
   showConfirmPassword = false;
 
+  // Add a robust email pattern validation
+  private emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   constructor(private authService: AuthService) {}
 
   togglePasswordVisibility(): void {
@@ -34,17 +37,28 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    if (!this.name || !this.email || !this.password || !this.confirmPassword) {
+    // Normalize inputs
+    const name = this.name.trim();
+    const email = this.email.trim();
+    const password = this.password;
+    const confirmPassword = this.confirmPassword;
+
+    if (!name || !email || !password || !confirmPassword) {
       this.error = 'Preencha todos os campos';
       return;
     }
 
-    if (this.password !== this.confirmPassword) {
+    if (!this.emailPattern.test(email)) {
+      this.error = 'Digite um email válido';
+      return;
+    }
+
+    if (password !== confirmPassword) {
       this.error = 'As senhas não coincidem';
       return;
     }
 
-    if (this.password.length < 6) {
+    if (password.length < 6) {
       this.error = 'A senha deve ter no mínimo 6 caracteres';
       return;
     }
@@ -52,7 +66,7 @@ export class RegisterComponent {
     this.loading = true;
     this.error = '';
 
-    this.authService.register(this.name, this.email, this.password).subscribe({
+    this.authService.register(name, email, password).subscribe({
       next: () => {
         this.loading = false;
         // Registro bem sucedido - usuário já está autenticado

@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../repositories/user.repository';
 import { LoginDto, LoginResponseDto, RegisterDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcrypt';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+
 
 /**
  * SERVICE - Lógica de negócio de Autenticação
@@ -52,7 +53,8 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<LoginResponseDto> {
     const existingUser = await this.userRepository.findByEmail(registerDto.email);
     if (existingUser) {
-      throw new UnauthorizedException('Email já cadastrado');
+      // Use proper HTTP semantics for conflicts
+      throw new ConflictException('Email já cadastrado');
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);

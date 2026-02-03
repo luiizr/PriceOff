@@ -1,0 +1,181 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+<div class="landing-wrapper">
+  
+  <div class="bg-gradient-orb orb-1"></div>
+  <div class="bg-gradient-orb orb-2"></div>
+
+  <nav class="navbar">
+    <div class="logo">
+      <i class="ti ti-brand-openai"></i> Fluxo.
+    </div>
+    <div class="nav-links">
+      <a href="dashboard">Recursos</a>
+      <a href="#comparison">Por que nós?</a>
+      <a href="#pricing">Planos</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-text">
+      <a href="auth">Entrar</a>
+      </button>
+      <button class="btn-primary">Começar no Zap</button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-text" #animateItem>
+      <div class="status-pill">
+        <span class="dot"></span> IA Ativa 24/7
+      </div>
+      <h1>
+        Finanças complexas?<br>
+        Resolva com um <span class="highlight-text">áudio.</span>
+      </h1>
+      <p class="hero-desc">
+        O <strong>Fluxo</strong> transforma seu WhatsApp em um assistente financeiro pessoal.
+        Envie comprovantes, textos ou áudios. A IA categoriza, organiza e te alerta antes do dinheiro acabar.
+      </p>
+      
+      <div class="cta-wrapper">
+        <button class="btn-primary btn-lg">
+          <i class="ti ti-brand-whatsapp"></i> Testar Agora Grátis
+        </button>
+        <p class="sub-cta">Sem cartão de crédito • Cancelamento a qualquer momento</p>
+      </div>
+
+      <div class="trusted-by">
+        <span>Segurança garantida por tecnologia:</span>
+        <div class="logos">
+          <i class="ti ti-lock-square"></i> Criptografia SSL
+          <span class="divider">|</span>
+          <i class="ti ti-shield-check"></i> LGPD Ready
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual" #animateItem>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-status-bar">
+          <span>10:45</span>
+          <div class="icons">
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </div>
+        </div>
+        <div class="phone-screen">
+          <div class="wa-header">
+            <div class="back-btn"><i class="ti ti-chevron-left"></i></div>
+            <div class="profile-pic">
+              <i class="ti ti-robot"></i>
+            </div>
+            <div class="chat-info">
+              <span class="name">Fluxo AI</span>
+              <span class="status">Online • Business</span>
+            </div>
+          </div>
+          <div class="wa-body">
+            <div class="date-divider"><span>Hoje</span></div>
+            
+            <div *ngFor="let msg of chatMessages" 
+                 class="msg-bubble" 
+                 [ngClass]="{'msg-bot': msg.type === 'bot', 'msg-user': msg.type === 'user'}">
+              <p>{{ msg.text }}</p>
+              <span class="time">{{ msg.time }} <i *ngIf="msg.type === 'user'" class="ti ti-check-all"></i></span>
+            </div>
+          </div>
+          <div class="wa-input-area">
+            <i class="ti ti-plus"></i>
+            <div class="input-fake"></div>
+            <i class="ti ti-microphone circle-icon"></i>
+          </div>
+        </div>
+      </div>
+      <div class="floating-stat">
+        <div class="icon"><i class="ti ti-trending-up"></i></div>
+        <div>
+          <span>Economia Mensal</span>
+          <strong>+ R$ 420,00</strong>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="comparison" class="comparison-section">
+    <div class="container">
+      <div class="section-title" #animateItem>
+        <h2>A evolução do seu bolso</h2>
+        <p>Pare de viver no passado com planilhas que ninguém preenche.</p>
+      </div>
+
+      <div class="compare-grid" #animateItem>
+        <div class="compare-card bad">
+          <h3>❌ O Jeito Antigo</h3>
+          <ul>
+            <li><i class="ti ti-x"></i> Baixar apps pesados</li>
+            <li><i class="ti ti-x"></i> Esquecer de anotar gastos</li>
+            <li><i class="ti ti-x"></i> Planilhas complexas</li>
+            <li><i class="ti ti-x"></i> "Cadê meu dinheiro?"</li>
+          </ul>
+        </div>
+        <div class="compare-card good">
+          <div class="badge-best">Recomendado</div>
+          <h3>✅ Com Fluxo</h3>
+          <ul>
+            <li><i class="ti ti-check"></i> Usa o WhatsApp (já instalado)</li>
+            <li><i class="ti ti-check"></i> Envie foto, áudio ou texto</li>
+            <li><i class="ti ti-check"></i> Relatórios automáticos</li>
+            <li><i class="ti ti-check"></i> Alertas preditivos de gastos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="container" #animateItem>
+      <h2>Perguntas Frequentes</h2>
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.active]="faq.open">
+          <button class="faq-question" (click)="toggleFaq(i)">
+            {{ faq.question }}
+            <i class="ti ti-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="glow-bg"></div>
+    <div class="content" #animateItem>
+      <h2>Assuma o controle agora.</h2>
+      <p>Junte-se a 5.000+ pessoas que saíram do vermelho usando apenas o WhatsApp.</p>
+      <button class="btn-primary btn-xl">Começar Teste Grátis</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div class="col">
+          <span class="logo">Fluxo.</span>
+          <p>Inteligência financeira no seu bolso.</p>
+        </div>
+        <div class="col-links">
+          <a href="#">Termos de Uso</a>
+          <a href="#">Privacidade</a>
+          <a href="#">Suporte</a>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2024 Fluxo Technologies.
+      </div>
+    </div>
+  </footer>
+
+</div>
