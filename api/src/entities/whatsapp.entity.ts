@@ -6,26 +6,26 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
  * Para conexão do número dev com o sistema.
  * 
  */
-@Entity('whatsapp')
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+// @Entity('whatsapp')
+// export class User {
+//   @PrimaryGeneratedColumn('uuid')
+//   id: string;
 
-  @Column({ length: 100 })
-  name: string;
+//   @Column({ length: 100 })
+//   name: string;
 
-  @Column({})
-  phoneNumber: number;
+//   @Column({})
+//   phoneNumber: number;
 
-  @Column({ unique: true })
-  userId: string;
+//   @Column({ unique: true })
+//   userId: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+//   @Column({ default: true })
+//   isActive: boolean;
 
-  @CreateDateColumn()
-  createdAt: Date;
+//   @CreateDateColumn()
+//   createdAt: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
-}
+//   @UpdateDateColumn()
+//   updatedAt: Date;
+// }

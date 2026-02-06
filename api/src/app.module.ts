@@ -7,17 +7,30 @@ import { AppService } from './app.service';
 
 // Importar todas as entidades
 import { User } from './entities/user.entity';
+import { Transaction } from './entities/transaction.entity';
+import { Category } from './entities/category.entity';
+import { Budget } from './entities/budget.entity';
 
 // Importar todos os controllers
 import { AuthController } from './controllers/auth.controller';
 import { UserController } from './controllers/user.controller';
+import { TransactionController } from './controllers/transaction.controller';
+import { CategoryController } from './controllers/category.controller';
+import { BudgetController } from './controllers/budget.controller';
+import { DashboardController } from './controllers/dashboard.controller';
 
 // Importar todos os services
 import { AuthService } from './services/auth.service';
-// import { WhatsappService } from './services/whatsapp.service';
+import { TransactionService } from './services/transaction.service';
+import { CategoryService } from './services/category.service';
+import { BudgetService } from './services/budget.service';
+import { DashboardService } from './services/dashboard.service';
 
 // Importar todos os repositories
 import { UserRepository } from './repositories/user.repository';
+import { TransactionRepository } from './repositories/transaction.repository';
+import { CategoryRepository } from './repositories/category.repository';
+import { BudgetRepository } from './repositories/budget.repository';
 
 // Importar strategies
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -39,12 +52,12 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
       username: process.env.BD_USERNAME!,
       password: process.env.BD_PASSWORD!,
       database: process.env.BD_DATABASE!,
-      entities: [User], // Registrar todas as entidades aqui
+      entities: [User, Transaction, Category, Budget], // Registrar todas as entidades aqui
       synchronize: process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV !== 'production',
     }),
     // Registrar entidades para injeção
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Transaction, Category, Budget]),
     // Configuração do Passport
     PassportModule,
     // Configuração do JWT
@@ -57,15 +70,25 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
   ],
   controllers: [
     AppController,
-    AuthController, // Adicionar todos os controllers aqui
-    UserController, // Controller de usuários (protegido)
+    AuthController,
+    UserController,
+    TransactionController,
+    CategoryController,
+    BudgetController,
+    DashboardController,
   ],
   providers: [
     AppService,
-    AuthService, // Adicionar todos os services aqui
-    // WhatsappService, // Service do WhatsApp com Baileys
-    UserRepository, // Adicionar todos os repositories aqui
-    JwtStrategy, // Adicionar strategies aqui
+    AuthService,
+    TransactionService,
+    CategoryService,
+    BudgetService,
+    DashboardService,
+    UserRepository,
+    TransactionRepository,
+    CategoryRepository,
+    BudgetRepository,
+    JwtStrategy,
   ],
 })
 export class AppModule implements NestModule {

@@ -1,12 +1,29 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { ValidationExceptionFilter } from './filters/validation.filter';
 import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   try {
     const porta = process.env.PORTA || 3000;
     const app = await NestFactory.create(AppModule);
+
+    // Exception filter para erros de validação
+    app.useGlobalFilters(new ValidationExceptionFilter());
+
+    // Configuração do ValidationPipe para validar DTOs
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true, // Remove propriedades não definidas no DTO
+        forbidNonWhitelisted: true, // Lança erro para propriedades não definidas
+        transform: true, // Transforma payloads para instâncias de DTOs
+        transformOptions: {
+          enableImplicitConversion: true, // Conversão automática de tipos
+        },
+      }),
+    );
 
     // Configuração do CORS
     app.enableCors({

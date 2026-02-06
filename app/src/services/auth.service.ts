@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 
 interface User {
@@ -25,7 +26,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.loadUserFromStorage();
   }
 
@@ -44,6 +45,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           this.saveAuth(response);
+          this.router.navigate(['/dashboard']);
         })
       );
   }
@@ -56,6 +58,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           this.saveAuth(response);
+          this.router.navigate(['/dashboard']);
         })
       );
   }
@@ -67,6 +70,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
+    this.router.navigate(['/']);
   }
 
   /**

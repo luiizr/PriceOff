@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, BadRequestException } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LoginDto, LoginResponseDto, RegisterDto } from '../dto/auth.dto';
 
@@ -12,24 +12,35 @@ export class AuthController {
 
   /**
    * POST /auth/login
+   * Faz login e retorna token JWT
    */
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
-    return this.authService.login(loginDto);
+    try {
+      return await this.authService.login(loginDto);
+    } catch (error) {
+      throw error; // O serviço já lança exceções adequadas
+    }
   }
 
   /**
    * POST /auth/register
+   * Registra novo usuário e retorna token JWT
    */
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() registerDto: RegisterDto): Promise<LoginResponseDto> {
-    return this.authService.register(registerDto);
+    try {
+      return await this.authService.register(registerDto);
+    } catch (error) {
+      throw error; // O serviço já lança exceções adequadas
+    }
   }
 
   /**
    * GET /auth/status
+   * Verifica se o serviço de autenticação está rodando
    */
   @Get('status')
   async status() {
