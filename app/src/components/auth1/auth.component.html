@@ -1,6 +1,12 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+<p-toast position="top-right"></p-toast>
+
 <div class="auth-container">
   <div class="brand-side">
     <div class="bg-gradient-orb orb-1"></div>
+    <div class="bg-gradient-orb orb-2"></div>
     <div class="content">
       <div class="logo">
         <i class="ti ti-brand-openai"></i> Fluxo.
@@ -28,45 +34,129 @@
         </p>
       </div>
 
-      <form (ngSubmit)="onSubmit()">
+      <form (ngSubmit)="onSubmit()" #authForm="ngForm">
+        
+        <!-- Nome (apenas registro) -->
         <div class="input-group" *ngIf="!isLoginMode">
-          <label>Nome completo</label>
-          <div class="input-wrapper">
+          <label for="name">Nome completo</label>
+          <div class="input-wrapper" [class.error]="formSubmitted && !isNameValid()">
             <i class="ti ti-user"></i>
-            <input type="text" placeholder="Seu nome">
+            <input 
+              type="text" 
+              id="name"
+              name="name"
+              [(ngModel)]="name"
+              (focus)="clearError()"
+              placeholder="Seu nome completo"
+              autocomplete="name"
+            >
           </div>
+          <small class="error-msg" *ngIf="formSubmitted && !name">Nome é obrigatório</small>
+          <small class="error-msg" *ngIf="formSubmitted && name && !isNameValid()">Nome inválido (mín. 3 letras)</small>
         </div>
 
+        <!-- Email -->
         <div class="input-group">
-          <label>E-mail</label>
-          <div class="input-wrapper">
+          <label for="email">E-mail</label>
+          <div class="input-wrapper" [class.error]="formSubmitted && !isEmailValid()">
             <i class="ti ti-mail"></i>
-            <input type="email" placeholder="exemplo@email.com">
+            <input 
+              type="email" 
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              (focus)="clearError()"
+              placeholder="exemplo@email.com"
+              autocomplete="email"
+              inputmode="email"
+            >
           </div>
+          <small class="error-msg" *ngIf="formSubmitted && !email">Email é obrigatório</small>
+          <small class="error-msg" *ngIf="formSubmitted && email && !isEmailValid()">Email inválido</small>
         </div>
 
+        <!-- Senha -->
         <div class="input-group">
-          <label>Senha</label>
-          <div class="input-wrapper">
+          <label for="password">Senha</label>
+          <div class="input-wrapper" [class.error]="formSubmitted && !isPasswordValid() && !isLoginMode">
             <i class="ti ti-lock"></i>
-            <input type="password" placeholder="••••••••">
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              (focus)="clearError()"
+              [placeholder]="isLoginMode ? '••••••••' : 'Mínimo 6 caracteres'"
+              [autocomplete]="isLoginMode ? 'current-password' : 'new-password'"
+            >
+            <button type="button" class="toggle-pass ml-2 mt-[2px]" (click)="togglePasswordVisibility()">
+              <i [class]="showPassword ? 'ti ti-eye' : 'ti ti-eye-off'"></i>
+            </button>
           </div>
+          <small class="error-msg" *ngIf="formSubmitted && !password">Senha é obrigatória</small>
+          <small class="error-msg" *ngIf="formSubmitted && password && !isPasswordValid() && !isLoginMode">Mínimo 6 caracteres</small>
         </div>
 
-        <button type="submit" class="btn-primary btn-block">
-          {{ isLoginMode ? 'Entrar no Sistema' : 'Começar Agora' }} <i class="ti ti-arrow-right"></i>
+        <!-- Confirmar Senha (apenas registro) -->
+        <div class="input-group" *ngIf="!isLoginMode">
+          <label for="confirmPassword">Confirmar Senha</label>
+          <div class="input-wrapper" [class.error]="formSubmitted && !doPasswordsMatch()">
+            <i class="ti ti-lock-check"></i>
+            <input 
+              [type]="showConfirmPassword ? 'text' : 'password'" 
+              id="confirmPassword"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+              (focus)="clearError()"
+              placeholder="Repita a senha"
+              autocomplete="new-password"
+            >
+            <button type="button" class="toggle-pass" (click)="toggleConfirmPasswordVisibility()">
+              <i [class]="showConfirmPassword ? 'ti ti-eye' : 'ti ti-eye-off'"></i>
+            </button>
+          </div>
+          <small class="error-msg" *ngIf="formSubmitted && !confirmPassword">Confirmação é obrigatória</small>
+          <small class="error-msg" *ngIf="formSubmitted && confirmPassword && !doPasswordsMatch()">Senhas não coincidem</small>
+        </div>
+
+        <!-- Esqueceu a senha (apenas login) -->
+        <div class="forgot-password" *ngIf="isLoginMode">
+          <a href="#">Esqueceu a senha?</a>
+        </div>
+
+        <!-- Mensagem de Erro Global -->
+        <div class="error-box" *ngIf="error">
+          <i class="ti ti-alert-circle"></i>
+          <span>{{ error }}</span>
+        </div>
+
+        <!-- Botão Submit -->
+        <button 
+          type="submit" 
+          class="btn-primary btn-block"
+          [disabled]="loading"
+          [class.loading]="loading"
+        >
+          <span *ngIf="!loading">
+            {{ isLoginMode ? 'Entrar no Sistema' : 'Criar Conta Grátis' }}
+            <i class="ti ti-arrow-right"></i>
+          </span>
+          <span *ngIf="loading" class="loading-content">
+            <i class="ti ti-loader-2 spin"></i>
+            {{ isLoginMode ? 'Entrando...' : 'Criando...' }}
+          </span>
         </button>
       </form>
 
-      <div class="divider">ou continue com</div>
+      <div class="divider"><span>ou continue com</span></div>
 
-      <button class="btn-social">
+      <button class="btn-social" type="button">
         <i class="ti ti-brand-google-filled"></i> Google
       </button>
 
       <p class="switch-auth">
         {{ isLoginMode ? 'Não tem uma conta?' : 'Já tem uma conta?' }}
-        <a (click)="toggleMode()">{{ isLoginMode ? 'Cadastre-se' : 'Faça Login' }}</a>
+        <a (click)="toggleMode()">{{ isLoginMode ? 'Cadastre-se grátis' : 'Faça Login' }}</a>
       </p>
     </div>
   </div>

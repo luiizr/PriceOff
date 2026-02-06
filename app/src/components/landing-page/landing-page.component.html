@@ -17,7 +17,8 @@
     </div>
     <div class="nav-actions">
       <button class="btn-text">
-      <a href="auth">Entrar</a>
+        <a href="auth">Entrar</a>
+        <!-- <app-auth></app-auth> -->
       </button>
       <button class="btn-primary">Começar no Zap</button>
     </div>
@@ -102,6 +103,25 @@
     </div>
   </header>
 
+  <section id="features" class="features-section">
+    <div class="container">
+      <div class="section-title centered" #animateItem>
+        <h2>Muito mais que uma planilha.</h2>
+        <p>Tecnologia invisível que trabalha enquanto você vive.</p>
+      </div>
+
+      <div class="features-grid" #animateItem>
+        <div class="feature-card" *ngFor="let feat of features">
+          <div class="icon-box">
+            <i [class]="feat.icon"></i>
+          </div>
+          <h3>{{ feat.title }}</h3>
+          <p>{{ feat.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="comparison" class="comparison-section">
     <div class="container">
       <div class="section-title" #animateItem>
@@ -128,6 +148,41 @@
             <li><i class="ti ti-check"></i> Relatórios automáticos</li>
             <li><i class="ti ti-check"></i> Alertas preditivos de gastos</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <div class="section-title centered" #animateItem>
+        <h2>Invista no seu futuro financeiro.</h2>
+        <p>Menos que um café por mês para ter controle total.</p>
+      </div>
+
+      <div class="pricing-grid" #animateItem>
+        <div class="pricing-card" *ngFor="let plan of plans" [class.highlight]="plan.highlight">
+          <div class="popular-tag" *ngIf="plan.highlight">{{ plan.tag }}</div>
+          
+          <div class="plan-header">
+            <h3>{{ plan.name }}</h3>
+            <div class="price">
+              <span class="currency">R$</span>
+              <span class="value">{{ plan.price }}</span>
+              <span class="period">{{ plan.period }}</span>
+            </div>
+            <p>{{ plan.desc }}</p>
+          </div>
+
+          <ul class="plan-features">
+            <li *ngFor="let feat of plan.features">
+              <i class="ti ti-check"></i> {{ feat }}
+            </li>
+          </ul>
+
+          <button class="btn-plan" [class.btn-primary]="plan.highlight" [class.btn-outline]="!plan.highlight">
+            {{ plan.cta }}
+          </button>
         </div>
       </div>
     </div>
