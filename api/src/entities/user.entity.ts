@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
+import { Transaction } from './transaction.entity';
+import { Category } from './category.entity';
+import { Budget } from './budget.entity';
 
 /**
  * ENTIDADE User
@@ -7,7 +17,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({ length: 100 })
   name: string;
@@ -23,6 +33,15 @@ export class User {
 
   @Column({ nullable: true })
   root: boolean;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[];
+
+  @OneToMany(() => Category, (category) => category.user)
+  categories: Category[];
+
+  @OneToMany(() => Budget, (budget) => budget.user)
+  budgets: Budget[];
 
   @CreateDateColumn()
   createdAt: Date;
